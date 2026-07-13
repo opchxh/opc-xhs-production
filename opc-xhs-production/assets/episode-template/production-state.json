@@ -1,0 +1,35 @@
+{
+  "episode": {
+    "name": "",
+    "source_plan_md": "",
+    "current_stage": "intake"
+  },
+  "deliverables": {
+    "source_plan_md": "",
+    "voiceover_analysis_md": "",
+    "voiceover_script_md": "",
+    "recording_guide_md": "",
+    "poster_titles_md": "",
+    "note_package_md": "",
+    "recording_assets": [],
+    "animation_brief_md": "",
+    "animation_project_dir": "",
+    "animation_render_path": "",
+    "animation_qa_md": "",
+    "cover_interview_log_md": "",
+    "cover_brief_md": "",
+    "cover_prompt_md": "",
+    "cover_output_path": "",
+    "cover_qa_md": "",
+    "final_package_md": ""
+  },
+  "confirmations": {
+    "animation_plan_approved": false,
+    "cover_plan_approved": false
+  },
+  "subskills_used": {
+    "lingzao": false,
+    "remotion_or_hyperframes": false,
+    "atutun_xhs_cover_v2": false
+  }
+}
