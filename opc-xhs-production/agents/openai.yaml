@@ -1,6 +1,6 @@
 interface:
   display_name: "OPC 碎碎念探长小红书"
-  short_description: "小红书内容生产全流程协调 Skill"
-  default_prompt: "Use $opc-xhs-production to turn my 小红书发布计划 MD into 口播、动效、封面和发布素材。"
+  short_description: "从选题脚本到录音素材、动效剪辑、封面和发布包的小红书全流程"
+  default_prompt: "Use $opc-xhs-production to produce this 小红书 episode end to end: topic/script with Lingzao, recording intake, OPC 碎碎念探长标准剪辑风格, animation, cover, and publish package."
 policy:
   allow_implicit_invocation: true

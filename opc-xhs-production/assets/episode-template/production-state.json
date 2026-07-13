@@ -2,7 +2,8 @@
   "episode": {
     "name": "",
     "source_plan_md": "",
-    "current_stage": "intake"
+    "current_stage": "intake",
+    "source_brief_md": ""
   },
   "deliverables": {
     "source_plan_md": "",
@@ -21,7 +22,12 @@
     "cover_prompt_md": "",
     "cover_output_path": "",
     "cover_qa_md": "",
-    "final_package_md": ""
+    "final_package_md": "",
+    "source_brief_md": "",
+    "topic_angle_md": "",
+    "audio_assets": [],
+    "video_assets": [],
+    "auxiliary_assets": []
   },
   "confirmations": {
     "animation_plan_approved": false,

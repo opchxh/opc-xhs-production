@@ -33,6 +33,7 @@ class AuditEpisodeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             write_text(root / "plan.md", "# 口播规划\n...\n# 笔记规划\n...")
+            write_text(root / "topic-angle.md")
             write_text(root / "voiceover-analysis.md")
             write_text(root / "voiceover-script.md")
             write_text(root / "recording-guide.md")
@@ -40,6 +41,7 @@ class AuditEpisodeTests(unittest.TestCase):
             write_state(root, {
                 "deliverables": {
                     "source_plan_md": "plan.md",
+                    "topic_angle_md": "topic-angle.md",
                     "voiceover_analysis_md": "voiceover-analysis.md",
                     "voiceover_script_md": "voiceover-script.md",
                     "recording_guide_md": "recording-guide.md",
@@ -55,17 +57,67 @@ class AuditEpisodeTests(unittest.TestCase):
             self.assertIn("poster_titles_md", result.stdout)
             self.assertIn("note_package_md", result.stdout)
 
-    def test_animation_generation_requires_explicit_plan_approval(self):
+    def test_intake_stage_accepts_source_brief_without_plan_md(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write_text(root / "brief.md", "主题：Agent 工作流\n受众：小红书创作者\n约束：90 秒以内")
+            write_state(root, {
+                "deliverables": {
+                    "source_brief_md": "brief.md",
+                },
+            })
+
+            result = run_audit(root, "intake")
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_recording_stage_requires_categorized_audio_assets(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             required = {
-                "plan.md": "# 口播规划\n...\n# 笔记规划\n...",
+                "brief.md": "主题：Agent 工作流",
+                "topic-angle.md": "从低效手搓切到 agent 接力",
                 "voiceover-analysis.md": "ok",
                 "voiceover-script.md": "ok",
                 "recording-guide.md": "ok",
                 "poster-titles.md": "ok",
                 "note-package.md": "ok",
-                "recordings/a.mov": "media",
+                "recordings/a.m4a": "media",
+                "worklog.md": "lingzao",
+            }
+            for rel, text in required.items():
+                write_text(root / rel, text)
+            write_state(root, {
+                "deliverables": {
+                    "source_brief_md": "brief.md",
+                    "topic_angle_md": "topic-angle.md",
+                    "voiceover_analysis_md": "voiceover-analysis.md",
+                    "voiceover_script_md": "voiceover-script.md",
+                    "recording_guide_md": "recording-guide.md",
+                    "poster_titles_md": "poster-titles.md",
+                    "note_package_md": "note-package.md",
+                    "recording_assets": ["recordings/a.m4a"],
+                },
+                "subskills_used": {"lingzao": True},
+            })
+
+            result = run_audit(root, "recording")
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("audio_assets", result.stdout)
+
+    def test_animation_generation_requires_explicit_plan_approval(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            required = {
+                "plan.md": "# 口播规划\n...\n# 笔记规划\n...",
+                "topic-angle.md": "ok",
+                "voiceover-analysis.md": "ok",
+                "voiceover-script.md": "ok",
+                "recording-guide.md": "ok",
+                "poster-titles.md": "ok",
+                "note-package.md": "ok",
+                "recordings/a.m4a": "media",
                 "animation-brief.md": "ok",
                 "animation-project/index.html": "ok",
                 "renders/animation.mp4": "media",
@@ -77,12 +129,16 @@ class AuditEpisodeTests(unittest.TestCase):
             write_state(root, {
                 "deliverables": {
                     "source_plan_md": "plan.md",
+                    "topic_angle_md": "topic-angle.md",
                     "voiceover_analysis_md": "voiceover-analysis.md",
                     "voiceover_script_md": "voiceover-script.md",
                     "recording_guide_md": "recording-guide.md",
                     "poster_titles_md": "poster-titles.md",
                     "note_package_md": "note-package.md",
-                    "recording_assets": ["recordings/a.mov"],
+                    "audio_assets": ["recordings/a.m4a"],
+                    "video_assets": [],
+                    "auxiliary_assets": [],
+                    "recording_assets": ["recordings/a.m4a"],
                     "animation_brief_md": "animation-brief.md",
                     "animation_project_dir": "animation-project",
                     "animation_render_path": "renders/animation.mp4",
@@ -102,12 +158,15 @@ class AuditEpisodeTests(unittest.TestCase):
             root = Path(tmp)
             required = {
                 "plan.md": "# 口播规划\n...\n# 笔记规划\n...",
+                "topic-angle.md": "ok",
                 "voiceover-analysis.md": "ok",
                 "voiceover-script.md": "ok",
                 "recording-guide.md": "ok",
                 "poster-titles.md": "ok",
                 "note-package.md": "ok",
-                "recordings/a.mov": "media",
+                "recordings/a.m4a": "media",
+                "clips/opening.mov": "video",
+                "assets/screenshot.png": "image",
                 "animation-brief.md": "ok",
                 "animation-project/index.html": "ok",
                 "renders/animation.mp4": "media",
@@ -125,12 +184,16 @@ class AuditEpisodeTests(unittest.TestCase):
             write_state(root, {
                 "deliverables": {
                     "source_plan_md": "plan.md",
+                    "topic_angle_md": "topic-angle.md",
                     "voiceover_analysis_md": "voiceover-analysis.md",
                     "voiceover_script_md": "voiceover-script.md",
                     "recording_guide_md": "recording-guide.md",
                     "poster_titles_md": "poster-titles.md",
                     "note_package_md": "note-package.md",
-                    "recording_assets": ["recordings/a.mov"],
+                    "audio_assets": ["recordings/a.m4a"],
+                    "video_assets": ["clips/opening.mov"],
+                    "auxiliary_assets": ["assets/screenshot.png"],
+                    "recording_assets": ["recordings/a.m4a", "clips/opening.mov", "assets/screenshot.png"],
                     "animation_brief_md": "animation-brief.md",
                     "animation_project_dir": "animation-project",
                     "animation_render_path": "renders/animation.mp4",

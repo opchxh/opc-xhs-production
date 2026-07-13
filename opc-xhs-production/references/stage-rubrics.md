@@ -2,14 +2,16 @@
 
 ## Intake
 
-- Publishing-plan MD contains both 口播规划 and 笔记规划.
+- If a publishing-plan MD is provided, it contains or is checked for both 口播规划 and 笔记规划.
+- If no publishing-plan MD is provided, an intake brief captures topic direction, audience, constraints, and any account context.
 - Blocking gaps are asked as questions before creative rewriting.
-- `production-state.json` records the source MD path.
+- `production-state.json` records either `source_plan_md` or `source_brief_md`.
 
 ## Lingzao Content Package
 
 The Lingzao package must include:
 
+- 选题方向与切入角度: usable topic angle, not only generic theme words.
 - 原口播问题分析: concrete issues, not generic praise.
 - 新版口播稿: spoken, shootable, paced for the target video length.
 - 录制/拍摄提示: tone, shot, pause, expression, and retake notes.
@@ -17,6 +19,14 @@ The Lingzao package must include:
 - 笔记正文主标题 and 笔记正文副标题: searchable and curiosity-driven.
 - 笔记内容: structured for 小红书 reading, with useful detail.
 - 笔记标签: relevant tags, no spammy stuffing.
+
+## Recording Intake
+
+- Ask for素材 in this order: audio recordings, then video clips, then auxiliary素材.
+- Audio request asks how many audio recordings exist and requests those files first.
+- Video request asks how many video clips exist and requests only the needed真人 clips: 开头出镜, 强调观点, 总结收口.
+- Auxiliary request asks how many screenshots, screen recordings, photos, B-roll, links, or other素材 items exist and requests them last.
+- Received files are recorded by category in `audio_assets`, `video_assets`, and `auxiliary_assets`, with a combined `recording_assets` list for audit.
 
 ## Animation Plan
 
@@ -27,6 +37,7 @@ Before generation, the animation plan must state:
 - scene-by-scene structure with rough timing
 - user素材 and any web-sourced素材 candidates
 - source URLs and licensing assumptions for web素材
+- how OPC 碎碎念探长标准剪辑风格 is applied, including真人/动效/辅助素材 ratio
 - subtitle and text hierarchy strategy
 - render, preview, and QA checks
 
@@ -35,6 +46,8 @@ Before generation, the animation plan must state:
 - Render or preview is nonblank and correctly framed.
 - Audio/video timing matches the script or edit plan.
 - Text/subtitles stay inside safe areas.
+- Representative still frames are inspected for text overflow, bad alignment, and graphic crowding.
+- 真人 clips, if provided, are cut into opening, emphasis, or closing positions rather than used as uninterrupted full口播.
 - Web素材 use is recorded and appropriate.
 - Render path and project path exist.
 

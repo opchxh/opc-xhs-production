@@ -95,16 +95,25 @@ class Auditor:
             self._check_path_field("final_package_md", kind="file")
 
     def _check_intake(self) -> None:
-        path = self._check_path_field("source_plan_md", kind="file")
-        if path and path.exists():
-            text = path.read_text(encoding="utf-8", errors="ignore")
-            if "口播" not in text:
-                self.errors.append("source_plan_md must contain 口播 planning")
-            if "笔记" not in text:
-                self.errors.append("source_plan_md must contain 笔记 planning")
+        plan_value = self.deliverables.get("source_plan_md")
+        brief_value = self.deliverables.get("source_brief_md")
+        if isinstance(plan_value, str) and plan_value.strip():
+            path = self._check_relative_path(plan_value, "source_plan_md", kind="file")
+            if path and path.exists():
+                text = path.read_text(encoding="utf-8", errors="ignore")
+                if "口播" not in text:
+                    self.errors.append("source_plan_md must contain 口播 planning")
+                if "笔记" not in text:
+                    self.errors.append("source_plan_md must contain 笔记 planning")
+            return
+        if isinstance(brief_value, str) and brief_value.strip():
+            self._check_relative_path(brief_value, "source_brief_md", kind="file")
+            return
+        self.errors.append("Either source_plan_md or source_brief_md is required")
 
     def _check_lingzao(self) -> None:
         for field in (
+            "topic_angle_md",
             "voiceover_analysis_md",
             "voiceover_script_md",
             "recording_guide_md",
@@ -116,6 +125,21 @@ class Auditor:
         self._check_worklog_mentions("lingzao")
 
     def _check_recording(self) -> None:
+        audio_assets = self.deliverables.get("audio_assets")
+        if not isinstance(audio_assets, list) or not audio_assets:
+            self.errors.append("audio_assets must contain at least one uploaded audio path")
+        else:
+            for item in audio_assets:
+                self._check_relative_path(str(item), "audio_assets", kind="file")
+
+        for optional_field in ("video_assets", "auxiliary_assets"):
+            assets_by_type = self.deliverables.get(optional_field)
+            if not isinstance(assets_by_type, list):
+                self.errors.append(f"{optional_field} must be a list")
+                continue
+            for item in assets_by_type:
+                self._check_relative_path(str(item), optional_field, kind="file")
+
         assets = self.deliverables.get("recording_assets")
         if not isinstance(assets, list) or not assets:
             self.errors.append("recording_assets must contain at least one uploaded file path")

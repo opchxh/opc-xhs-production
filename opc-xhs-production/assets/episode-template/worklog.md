@@ -2,17 +2,19 @@
 
 ## Intake
 
-- Source plan:
+- Source plan or brief:
 - Blocking questions:
 
 ## Lingzao
 
 - lingzao called:
-- Output files:
+- Topic/script output files:
 
 ## Recording
 
-- Received assets:
+- Audio assets:
+- Video assets:
+- Auxiliary assets:
 - Notes:
 
 ## Animation
